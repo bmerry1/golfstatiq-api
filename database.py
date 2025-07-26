@@ -1,20 +1,22 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base # Import Base from models.py
+from models import Base
 
-# Using SQLite for this example as specified
-SQLALCHEMY_DATABASE_URL = "sqlite:///./golfstatiq.db"
+# Get the database URL from the environment variables
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+# A small fix because Render provides a "postgres://" URL 
+# but SQLAlchemy needs "postgresql://"
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Create the database tables
 def create_db_and_tables():
     Base.metadata.create_all(bind=engine)
 
-# Dependency to get a DB session in API endpoints
 def get_db():
     db = SessionLocal()
     try:

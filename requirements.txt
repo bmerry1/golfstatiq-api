@@ -3,3 +3,4 @@ uvicorn[standard]
 sqlalchemy
 python-multipart
 boto3
+psycopg2-binary
