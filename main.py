@@ -18,10 +18,17 @@ create_db_and_tables()
 app = FastAPI(title="GolfStatIQ Contributor API")
 
 # --- CORS Middleware ---
-# Allows the standalone HTML file to communicate with the API
+# Allow requests from your live frontend and local files
+origins = [
+    "https://www.golfstatiq.com",
+    "https://golfstatiq.com",
+    "null",
+    "file://"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["null", "file://"], # "null" or "file://" for local HTML files
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
